@@ -6,11 +6,15 @@
 
 @{
     ViewData["Title"] = Model.Name;
+    Layout = "_Layout";
 }
 
 <div class="container">
     <h1>@Model.Name</h1>
-    <img src="@Model.Photo" class="img-fluid" alt="@Model.Name">
-    <p class="card-text">@Model.Description</p>
-    <p class="card-text">Price: @Model.Price €</p>
+    <div class="clearfix">
+        <img src="@Model.Photo" class="col-md-6 float-md-end mb-3 ms-md-3" alt="@Model.Name">
+
+        <p class="card-text">@Model.Description</p>
+        <p class="card-text">Price: @Model.Price €</p>
+    </div>
 </div>

@@ -64,6 +64,53 @@ namespace la_mia_pizzeria_static.Controllers
             }
         }
 
+        public IActionResult EditForm(int Id)
+        {
+            PizzaContext context = new PizzaContext();
+            try
+            {
+                Pizza PizzaToEdit = context.pizzasList.Where(x => x.Id == Id).First();
+
+                if (PizzaToEdit == null)
+                {
+                    return NotFound();
+                }
+                else
+                {
+                    return View(PizzaToEdit);
+                }
+            }
+            catch
+            {
+                return View("Error");
+            }
+        }
+
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public IActionResult Edit(int Id, Pizza modifyPizza)
+        {
+            if (!ModelState.IsValid)
+            {
+                return View("EditForm", modifyPizza);
+            }
+            PizzaContext context = new PizzaContext();
+            Pizza toEdit = context.pizzasList.Where(x => x.Id == Id).First();
+            if (toEdit != null)
+            {
+                toEdit.Name = modifyPizza.Name;
+                toEdit.Description = modifyPizza.Description;
+                toEdit.Price = modifyPizza.Price;
+                toEdit.Photo = modifyPizza.Photo;
+                context.SaveChanges();
+            }
+            else
+            {
+                return View("Error");
+            }
+            return RedirectToAction("Index");
+        }
+
         public IActionResult Show(int id)
         {
 
@@ -72,8 +119,8 @@ namespace la_mia_pizzeria_static.Controllers
 
                 try
                 {
-                    Pizza p = db.pizzasList.Where(x => x.Id == id).First<Pizza>();
-                    return View("Show", p);
+                    Pizza toShow = db.pizzasList.Where(x => x.Id == id).First<Pizza>();
+                    return View("Show", toShow);
                 }
                 catch
                 {
@@ -82,6 +129,24 @@ namespace la_mia_pizzeria_static.Controllers
 
             }
 
+        }
+
+        public IActionResult Delete(int Id)
+        {
+            PizzaContext context = new PizzaContext();
+            Pizza toDelete = context.pizzasList.Where(x => x.Id == Id).First();
+
+            if (toDelete != null)
+            {
+                context.pizzasList.Remove(toDelete);
+                context.SaveChanges();
+
+                return RedirectToAction("Index");
+            }
+            else
+            {
+                return NotFound();
+            }
         }
 
         [ResponseCache(Duration = 0, Location = ResponseCacheLocation.None, NoStore = true)]

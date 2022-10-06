@@ -1,16 +1,12 @@
-﻿@*
-    For more information on enabling MVC for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
-*@
-@{
-    ViewData["Title"] = "Add Pizza";
+﻿@{
+    ViewData["Title"] = "EditForm";
     Layout = "_Layout";
 }
-
 @model Pizza
 
 <div class="container">
     <h1>@ViewData["Title"]</h1>
-    <form method="POST" asp-controller="Pizza" asp-action="Create">
+    <form method="POST" asp-controller="Pizza" asp-action="Edit" asp-route-id="@Model.Id">
         @Html.AntiForgeryToken()
         <div class="form-floating mb-3">
             <input type="text" class="form-control" asp-for="Name" id="Name" placeholder="Name">
@@ -33,6 +29,9 @@
             <span asp-validation-for="Price"></span>
         </div>
 
-        <button class="btn btn-primary" action="submit">Aggiungi</button>
+        <div class="d-flex justify-content-around">
+            <button class="btn btn-primary" action="submit">Edit</button>
+            <a class="btn btn-primary" asp-action="Index">Back to List</a>
+        </div>
     </form>
 </div>
