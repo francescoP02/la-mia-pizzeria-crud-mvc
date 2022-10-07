@@ -64,6 +64,7 @@ namespace la_mia_pizzeria_static.Controllers
             }
         }
 
+        [HttpGet]
         public IActionResult EditForm(int Id)
         {
             PizzaContext context = new PizzaContext();

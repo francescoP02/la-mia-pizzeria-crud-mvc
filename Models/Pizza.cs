@@ -29,6 +29,9 @@ namespace la_mia_pizzeria_static.Models
         [NegativeOrZero]
         public float Price { get; set; }
 
+        public int? CategoryId { get; set; }
+        public Category? Category { get; set; }
+
         public Pizza()
         {
 
