@@ -6,31 +6,40 @@
     Layout = "_Layout";
 }
 
-@model Pizza
+@model PizzaCategory
 
 <div class="container">
     <h1>@ViewData["Title"]</h1>
     <form method="POST" asp-controller="Pizza" asp-action="Create">
         @Html.AntiForgeryToken()
         <div class="form-floating mb-3">
-            <input type="text" class="form-control" asp-for="Name" id="Name" placeholder="Name">
+            <input type="text" class="form-control" asp-for="Pizza.Name" id="Name" placeholder="Name">
             <label for="Name">Name</label>
-            <span asp-validation-for="Name"></span>
+            <span asp-validation-for="Pizza.Name"></span>
         </div>
         <div class="form-floating mb-3">
-            <input type="text" class="form-control" asp-for="Description" id="Description" placeholder="Description">
+            <input type="text" class="form-control" asp-for="Pizza.Description" id="Description" placeholder="Description">
             <label for="Description">Description</label>
-            <span asp-validation-for="Description"></span>
+            <span asp-validation-for="Pizza.Description"></span>
         </div>
         <div class="form-floating mb-3">
-            <input type="text" class="form-control" asp-for="Photo" id="Photo" placeholder="Photo">
+            <input type="text" class="form-control" asp-for="Pizza.Photo" id="Photo" placeholder="Photo">
             <label for="Photo">Photo</label>
-            <span asp-validation-for="Photo"></span>
+            <span asp-validation-for="Pizza.Photo"></span>
         </div>
         <div class="form-floating mb-3">
-            <input type="number" class="form-control" asp-for="Price" id="Price" placeholder="Price">
+            <input type="number" class="form-control" asp-for="Pizza.Price" id="Price" placeholder="Price">
             <label for="Price">Price</label>
-            <span asp-validation-for="Price"></span>
+            <span asp-validation-for="Pizza.Price"></span>
+        </div>
+        <div class="mb-3">
+            <strong>Category:</strong>
+            <select asp-for="Pizza.CategoryId">
+                @foreach (Category category in Model.Categories)
+                {
+                    <option value="@category.Id">@category.Name</option>
+                }
+            </select>
         </div>
 
         <button class="btn btn-primary" action="submit">Aggiungi</button>

@@ -11,7 +11,7 @@ namespace la_mia_pizzeria_static.Models
     public class Pizza
     {
         [Key]
-        public int Id { get; private set; }
+        public int Id { get; set; }
 
         [Required(ErrorMessage = "Il campo nome è obbligatorio")]
         [StringLength(25, ErrorMessage = "Il nome non può avere più di 25 caratteri")]

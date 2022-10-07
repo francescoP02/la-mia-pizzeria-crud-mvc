@@ -26,6 +26,7 @@
                                 <h5 class="card-title">@pizza.Name</h5>
                                 <p class="card-text">@pizza.Description</p>
                                 <p class="card-text">Price: @pizza.Price €</p>
+                                <p class="card-text">@pizza.Category.Name</p>
                             </div>
                             <div class="card-footer d-flex justify-content-around">
                                 <a href="@Url.Action("Show", "Pizza", new {id = pizza.Id})" type="button" class="btn btn-primary">View Pizza</a>

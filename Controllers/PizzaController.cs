@@ -1,6 +1,7 @@
 ﻿using la_mia_pizzeria_static.Models;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Hosting;
 using Microsoft.IdentityModel.Tokens;
 using System.Diagnostics;
 
@@ -22,8 +23,8 @@ namespace la_mia_pizzeria_static.Controllers
 
             using (PizzaContext context = new PizzaContext())
             {
-                List<Pizza> pizzas = context.pizzasList.ToList<Pizza>();
-                return View("Index", pizzas);
+                //List<Pizza> pizzas = context.pizzasList.ToList<Pizza>();
+                return View("Index", context.pizzasList.Include(p => p.Category).ToList());
             }
 
         }
@@ -36,27 +37,35 @@ namespace la_mia_pizzeria_static.Controllers
         [HttpGet]
         public IActionResult Create()
         {
-            return View();
+            using (PizzaContext ctx = new PizzaContext())
+            {
+                List<Category> categories = ctx.categories.ToList();
+                PizzaCategory model = new PizzaCategory();
+                model.Categories = categories;
+                model.Pizza = new Pizza();
+                return View(model);
+            }
         }
 
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public IActionResult Create(Pizza formData)
+        public IActionResult Create(PizzaCategory pizzaData)
         {
             if (!ModelState.IsValid)
             {
-                return View("Create", formData);
+                pizzaData.Categories = new PizzaContext().categories.ToList();
+                return View("Create", pizzaData);
             }
 
             using (PizzaContext context = new PizzaContext())
             {
-                Pizza pizza = new Pizza();
-                pizza.Name = formData.Name;
-                pizza.Description = formData.Description;
-                pizza.Photo = formData.Photo;
-                pizza.Price = formData.Price;
+                //Pizza pizza = new Pizza();
+                //pizza.Name = formData.Name;
+                //pizza.Description = formData.Description;
+                //pizza.Photo = formData.Photo;
+                //pizza.Price = formData.Price;
 
-                context.pizzasList.Add(pizza);
+                context.pizzasList.Add(pizzaData.Pizza);
 
                 context.SaveChanges();
 
@@ -68,48 +77,67 @@ namespace la_mia_pizzeria_static.Controllers
         public IActionResult EditForm(int Id)
         {
             PizzaContext context = new PizzaContext();
-            try
+            using (PizzaContext ctx = new PizzaContext())
             {
-                Pizza PizzaToEdit = context.pizzasList.Where(x => x.Id == Id).First();
+                try
+                {
+                    Pizza PizzaToEdit = context.pizzasList.Where(x => x.Id == Id).First();
 
-                if (PizzaToEdit == null)
-                {
-                    return NotFound();
+                    if (PizzaToEdit == null)
+                    {
+                        return NotFound();
+                    }
+                    else
+                    {
+                        PizzaCategory pizzaCategory = new PizzaCategory();
+                        pizzaCategory.Pizza = PizzaToEdit;
+                        pizzaCategory.Categories = context.categories.ToList();
+                        return View(pizzaCategory);
+                    }
                 }
-                else
+                catch
                 {
-                    return View(PizzaToEdit);
+                    return View("Error");
                 }
-            }
-            catch
-            {
-                return View("Error");
             }
         }
 
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public IActionResult Edit(int Id, Pizza modifyPizza)
+        public IActionResult Edit(int Id, PizzaCategory dataForms)
         {
-            if (!ModelState.IsValid)
+            using (PizzaContext context = new PizzaContext())
             {
-                return View("EditForm", modifyPizza);
-            }
-            PizzaContext context = new PizzaContext();
-            Pizza toEdit = context.pizzasList.Where(x => x.Id == Id).First();
-            if (toEdit != null)
-            {
-                toEdit.Name = modifyPizza.Name;
-                toEdit.Description = modifyPizza.Description;
-                toEdit.Price = modifyPizza.Price;
-                toEdit.Photo = modifyPizza.Photo;
+                if (!ModelState.IsValid)
+                {
+                    dataForms.Categories = context.categories.ToList();
+                    return View("EditForm", dataForms);
+                }
+
+                dataForms.Pizza.Id = Id;
+                context.pizzasList.Update(dataForms.Pizza);
+
                 context.SaveChanges();
+
+                return RedirectToAction("Index");
+
+                //Pizza toEdit = context.pizzasList.Where(x => x.Id == Id).First();
+                //if (modifyPizza != null)
+                //{
+                //    toEdit.Name = modifyPizza.Name;
+                //    toEdit.Description = modifyPizza.Description;
+                //    toEdit.Price = modifyPizza.Price;
+                //    toEdit.Photo = modifyPizza.Photo;
+                //    modifyPizza.Pizza.Id = Id;
+                //    context.SaveChanges();
+                //}
+                //else
+                //{
+                //    return View("Error");
+                //}
+                //return RedirectToAction("Index");
             }
-            else
-            {
-                return View("Error");
-            }
-            return RedirectToAction("Index");
+            
         }
 
         public IActionResult Show(int id)
@@ -120,7 +148,7 @@ namespace la_mia_pizzeria_static.Controllers
 
                 try
                 {
-                    Pizza toShow = db.pizzasList.Where(x => x.Id == id).First<Pizza>();
+                    Pizza toShow = db.pizzasList.Where(x => x.Id == id).Include(pizza => pizza.Category).FirstOrDefault();
                     return View("Show", toShow);
                 }
                 catch

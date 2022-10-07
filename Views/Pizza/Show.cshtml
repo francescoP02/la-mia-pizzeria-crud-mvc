@@ -10,11 +10,12 @@
 }
 
 <div class="container">
-    <h1>@Model.Name</h1>
+    <h1>Pizza.Name</h1>
     <div class="clearfix">
         <img src="@Model.Photo" class="col-md-6 float-md-end mb-3 ms-md-3" alt="@Model.Name">
 
         <p class="card-text">@Model.Description</p>
         <p class="card-text">Price: @Model.Price €</p>
+        <p class="card-text">Category: @Model.Category.Name</p>
     </div>
 </div>
