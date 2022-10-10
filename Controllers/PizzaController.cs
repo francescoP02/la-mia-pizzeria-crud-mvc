@@ -24,7 +24,7 @@ namespace la_mia_pizzeria_static.Controllers
             using (PizzaContext context = new PizzaContext())
             {
                 //List<Pizza> pizzas = context.pizzasList.ToList<Pizza>();
-                return View("Index", context.pizzasList.Include(p => p.Category).ToList());
+                return View("Index", context.pizzasList.Include(p => p.Category).Include("Ingredients").ToList());
             }
 
         }
@@ -40,8 +40,10 @@ namespace la_mia_pizzeria_static.Controllers
             using (PizzaContext context = new PizzaContext())
             {
                 List<Category> categories = context.categories.ToList();
+                List<Ingredient> ingredients = context.Ingredients.ToList();
                 PizzaCategory model = new PizzaCategory();
                 model.Categories = categories;
+                model.Ingredients = ingredients;
                 model.Pizza = new Pizza();
                 return View(model);
             }
@@ -54,6 +56,7 @@ namespace la_mia_pizzeria_static.Controllers
             if (!ModelState.IsValid)
             {
                 pizzaData.Categories = new PizzaContext().categories.ToList();
+                pizzaData.Ingredients = new PizzaContext().Ingredients.ToList();
                 return View("Create", pizzaData);
             }
 
@@ -64,6 +67,8 @@ namespace la_mia_pizzeria_static.Controllers
                 //pizza.Description = formData.Description;
                 //pizza.Photo = formData.Photo;
                 //pizza.Price = formData.Price;
+
+                pizzaData.Pizza.Ingredients = context.Ingredients.Where(ingredient => pizzaData.selectedIngredients.Contains(ingredient.Id)).ToList();
 
                 context.pizzasList.Add(pizzaData.Pizza);
 
@@ -81,7 +86,7 @@ namespace la_mia_pizzeria_static.Controllers
             {
                 try
                 {
-                    Pizza PizzaToEdit = context.pizzasList.Where(x => x.Id == Id).First();
+                    Pizza PizzaToEdit = context.pizzasList.Where(x => x.Id == Id).Include("Ingredients").First();
 
                     if (PizzaToEdit == null)
                     {
@@ -92,6 +97,7 @@ namespace la_mia_pizzeria_static.Controllers
                         PizzaCategory pizzaCategory = new PizzaCategory();
                         pizzaCategory.Pizza = PizzaToEdit;
                         pizzaCategory.Categories = context.categories.ToList();
+                        pizzaCategory.Ingredients = context.Ingredients.ToList();
                         return View(pizzaCategory);
                     }
                 }
@@ -111,31 +117,24 @@ namespace la_mia_pizzeria_static.Controllers
                 if (!ModelState.IsValid)
                 {
                     dataForms.Categories = context.categories.ToList();
+                    dataForms.Ingredients = context.Ingredients.ToList();
                     return View("EditForm", dataForms);
                 }
 
-                dataForms.Pizza.Id = Id;
-                context.pizzasList.Update(dataForms.Pizza);
+                Pizza pizza = context.pizzasList.Where(pizza => pizza.Id == Id).Include("Ingredients").FirstOrDefault();
+
+                pizza.Name = dataForms.Pizza.Name;
+                pizza.Description = dataForms.Pizza.Description;
+                pizza.Photo = dataForms.Pizza.Photo;
+                pizza.Price = dataForms.Pizza.Price;
+                pizza.CategoryId = dataForms.Pizza.CategoryId;
+                pizza.Ingredients = context.Ingredients.Where(ingredient => dataForms.selectedIngredients.Contains(ingredient.Id)).ToList<Ingredient>();
+                
 
                 context.SaveChanges();
 
                 return RedirectToAction("Index");
 
-                //Pizza toEdit = context.pizzasList.Where(x => x.Id == Id).First();
-                //if (modifyPizza != null)
-                //{
-                //    toEdit.Name = modifyPizza.Name;
-                    toEdit.Description = modifyPizza.Description;
-                //    toEdit.Price = modifyPizza.Price;
-                //    toEdit.Photo = modifyPizza.Photo;
-                //    modifyPizza.Pizza.Id = Id;
-                //    context.SaveChanges();
-                //}
-                //else
-                //{
-                //    return View("Error");
-                //}
-                //return RedirectToAction("Index");
             }
             
         }
@@ -148,7 +147,7 @@ namespace la_mia_pizzeria_static.Controllers
 
                 try
                 {
-                    Pizza toShow = db.pizzasList.Where(x => x.Id == id).Include(pizza => pizza.Category).FirstOrDefault();
+                    Pizza toShow = db.pizzasList.Where(x => x.Id == id).Include(pizza => pizza.Category).Include("Ingredients").FirstOrDefault();
                     return View("Show", toShow);
                 }
                 catch

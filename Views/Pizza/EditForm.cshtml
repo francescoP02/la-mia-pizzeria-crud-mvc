@@ -45,6 +45,22 @@
                 }
             </select>
         </div>
+        <div class="form-check mb-3">
+            <span class="form-label">Ingredienti:</span>
+            <select asp-for="selectedIngredients" class="form-select" multiple>
+                @foreach (Ingredient ingredient in Model.Ingredients)
+                {
+                    @if (Model.Pizza.Ingredients.Contains(ingredient))
+                    {
+                        <option value="@ingredient.Id" selected>@ingredient.Title</option>
+                    }
+                    else
+                    {
+                        <option value="@ingredient.Id">@ingredient.Title</option>
+                    }
+                }
+            </select>
+        </div>
 
         <div class="d-flex justify-content-around">
             <button class="btn btn-primary" action="submit">Edit</button>

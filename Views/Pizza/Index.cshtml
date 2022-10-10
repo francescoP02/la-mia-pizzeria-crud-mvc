@@ -27,6 +27,17 @@
                                 <p class="card-text">@pizza.Description</p>
                                 <p class="card-text">Price: @pizza.Price €</p>
                                 <p class="card-text">@pizza.Category.Name</p>
+                                
+                                @if (pizza.Ingredients != null){
+                                    <p class="card-text">Ingredients:</p>
+                                    <ul>
+                                        @foreach (Ingredient ing in pizza.Ingredients)
+                                        {
+                                            <li>@ing.Title</li>
+                                        }
+                                    </ul>
+                                }
+    
                             </div>
                             <div class="card-footer d-flex justify-content-around">
                                 <a href="@Url.Action("Show", "Pizza", new {id = pizza.Id})" type="button" class="btn btn-primary">View Pizza</a>

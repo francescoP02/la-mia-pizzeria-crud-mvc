@@ -31,11 +31,11 @@ namespace la_mia_pizzeria_static.Models
 
         public int? CategoryId { get; set; }
         public Category? Category { get; set; }
-        public List<Ingredient>? Ingredients { get; set; }
+        public List<Ingredient> Ingredients { get; set; }
 
         public Pizza()
         {
-
+            Ingredients = new List<Ingredient>();
         }
 
         public Pizza(string name, string description, string photo, float price)

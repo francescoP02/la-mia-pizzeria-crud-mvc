@@ -17,5 +17,15 @@
         <p class="card-text">@Model.Description</p>
         <p class="card-text">Price: @Model.Price €</p>
         <p class="card-text">Category: @Model.Category.Name</p>
+        @if (Model.Ingredients != null)
+        {
+            <p class="card-text">Ingredients:</p>
+            <ul>
+                @foreach (Ingredient ing in Model.Ingredients)
+                {
+                    <li>@ing.Title</li>
+                }
+            </ul>
+        }
     </div>
 </div>
