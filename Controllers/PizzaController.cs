@@ -125,7 +125,7 @@ namespace la_mia_pizzeria_static.Controllers
                 //if (modifyPizza != null)
                 //{
                 //    toEdit.Name = modifyPizza.Name;
-                //    toEdit.Description = modifyPizza.Description;
+                    toEdit.Description = modifyPizza.Description;
                 //    toEdit.Price = modifyPizza.Price;
                 //    toEdit.Photo = modifyPizza.Photo;
                 //    modifyPizza.Pizza.Id = Id;
