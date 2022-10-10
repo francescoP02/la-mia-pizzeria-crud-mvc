@@ -37,9 +37,9 @@ namespace la_mia_pizzeria_static.Controllers
         [HttpGet]
         public IActionResult Create()
         {
-            using (PizzaContext ctx = new PizzaContext())
+            using (PizzaContext context = new PizzaContext())
             {
-                List<Category> categories = ctx.categories.ToList();
+                List<Category> categories = context.categories.ToList();
                 PizzaCategory model = new PizzaCategory();
                 model.Categories = categories;
                 model.Pizza = new Pizza();
@@ -76,8 +76,8 @@ namespace la_mia_pizzeria_static.Controllers
         [HttpGet]
         public IActionResult EditForm(int Id)
         {
-            PizzaContext context = new PizzaContext();
-            using (PizzaContext ctx = new PizzaContext())
+            //PizzaContext context = new PizzaContext();
+            using (PizzaContext context = new PizzaContext())
             {
                 try
                 {
